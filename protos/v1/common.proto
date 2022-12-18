@@ -1,0 +1,19 @@
+syntax= "proto3";
+
+package music_streaming.common;
+
+option go_package="./go/v1";
+
+message MetaRequest {
+    string email = 1;
+}
+
+message PaginationInfo {
+    uint64 offset = 1;
+    uint64 limit = 2;
+  }
+
+  message NameValueInt32 {
+    string name = 1;
+    int32 value = 2;
+  }

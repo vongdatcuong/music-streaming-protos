@@ -1,0 +1,139 @@
+syntax = "proto3";
+
+package music_streaming.music.playlist;
+
+option go_package="./go/v1";
+
+import "protos/v1/common.proto";
+import "protos/v1/song.proto";
+import "google/api/annotations.proto";
+
+message Playlist {
+  uint64 playlist_id = 1;
+  string name = 2;
+  string created_by = 3; 
+  uint64 created_at = 4;
+  uint64 updated_at = 5;
+  uint32 status = 6;
+  repeated music_streaming.music.song.Song songs = 7;
+}
+
+service PlaylistService {
+  rpc GetPlaylistList (GetPlaylistListRequest) returns (GetPlaylistListResponse) {
+    option (google.api.http) = {
+      post: "/api/gateway/v1/playlist/list",
+      body: "*"
+    };
+  };
+  rpc GetPlaylistDetails (GetPlaylistDetailsRequest) returns (GetPlaylistDetailsResponse) {
+    option (google.api.http) = {
+      post: "/api/gateway/v1/playlist/details",
+      body: "*"
+    };
+  };
+  rpc CreatePlaylist (CreatePlaylistRequest) returns (CreatePlaylistResponse) {
+    option (google.api.http) = {
+      post: "/api/gateway/v1/playlist/create_playlist",
+      body: "*"
+    };
+  };
+  rpc PutPlaylist (PutPlaylistRequest) returns (PutPlaylistResponse) {
+    option (google.api.http) = {
+      put: "/api/gateway/v1/playlist/put_playlist",
+      body: "*"
+    };
+  };
+  rpc DeletePlaylist (DeletePlaylistRequest) returns (DeletePlaylistResponse) {
+    option (google.api.http) = {
+      post: "/api/gateway/v1/playlist/delete_playlist"
+    };
+  };
+
+  rpc UpdatePlaylistSongs (UpdatePlaylistSongsRequest) returns (UpdatePlaylistSongsResponse) {
+    option (google.api.http) = {
+      post: "/api/gateway/v1/playlist/update_playlist_songs",
+      body: "*"
+    };
+  };
+}
+
+// Get Playlist List
+message GetPlaylistListRequest {
+  music_streaming.common.PaginationInfo pagination_info = 1;
+  GetPlaylistListFilter filter = 2;
+}
+
+message GetPlaylistListFilter {
+  string name = 1;
+  string created_by = 2;  // Filter by Email
+  uint64 created_time_from = 3;
+  uint64 created_time_to = 4;
+}
+
+message GetPlaylistListResponse {
+  GetPlaylistListResponseData data = 1;
+  optional uint32 error = 2;
+  optional string error_msg = 3;
+}
+
+message GetPlaylistListResponseData {
+  repeated Playlist playlists = 1;
+  optional uint64 total_count = 2;
+}
+
+// Get Playlist Details
+message GetPlaylistDetailsRequest {
+  uint64 playlist_id = 1;
+}
+
+message GetPlaylistDetailsResponse {
+  GetPlaylistDetailsResponseData data = 1;
+  optional uint32 error = 2;
+  optional string error_msg = 3;
+}
+
+message GetPlaylistDetailsResponseData {
+  Playlist Playlist = 1;
+}
+
+// Create Playlist
+message CreatePlaylistRequest {
+  Playlist playlist = 1;
+  repeated uint64 song_ids = 2;
+}
+
+message CreatePlaylistResponse {
+  optional uint32 error = 2;
+  optional string error_msg = 3;
+}
+
+// Put Playlist
+message PutPlaylistRequest {
+  Playlist playlist = 1;
+  repeated uint64 song_ids = 2;
+}
+
+message PutPlaylistResponse {
+  optional uint32 error = 2;
+  optional string error_msg = 3;
+}
+
+// Delete Playlist
+message DeletePlaylistRequest {
+  uint64 playlist_id = 1;
+}
+
+message DeletePlaylistResponse {
+  optional uint32 error = 2;
+  optional string error_msg = 3;
+}
+
+message UpdatePlaylistSongsRequest {
+  uint64 playlist_id = 1;
+  repeated uint64 song_ids = 2;
+}
+
+message UpdatePlaylistSongsResponse {
+  optional uint32 error = 2;
+  optional string error_msg = 3;
+}
