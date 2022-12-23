@@ -63,6 +63,7 @@ service UserService {
       body: "*"
     };
   };
+  rpc Authenticate (AuthenticateRequest) returns (AuthenticateResponse);
 }
 
 message GetUserListRequest {
@@ -152,4 +153,14 @@ message LogInResponse {
   User user = 2; 
   optional uint32 error = 3;
   optional string error_msg = 4;
+}
+
+message AuthenticateRequest {
+  uint64 user_id = 1;
+}
+
+message AuthenticateResponse {
+  optional bool is_authenticated = 1;
+  optional uint32 error = 2;
+  optional string error_msg = 3;
 }
