@@ -64,6 +64,12 @@ service UserService {
     };
   };
   rpc Authenticate (AuthenticateRequest) returns (AuthenticateResponse);
+  rpc GetUserListAutocomplete (GetUserListAutocompleteRequest) returns (GetUserListAutocompleteResponse) {
+    option (google.api.http) = {
+      post: "/api/gateway/v1/user/autocomplete"
+      body: "*"
+    };
+  };
 }
 
 message GetUserListRequest {
@@ -163,4 +169,19 @@ message AuthenticateResponse {
   optional bool is_authenticated = 1;
   optional uint32 error = 2;
   optional string error_msg = 3;
+}
+
+message GetUserListAutocompleteRequest {
+  string email = 1;
+}
+
+message GetUserListAutocompleteResponse {
+  GetUserListAutocompleteResponseData data = 1;
+  optional uint32 error = 2;
+  optional string error_msg = 3;
+}
+
+message GetUserListAutocompleteResponseData {
+  repeated User users = 1;
+  optional uint64 total_count = 2; 
 }

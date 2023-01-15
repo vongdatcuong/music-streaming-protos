@@ -30,6 +30,7 @@ type UserServiceClient interface {
 	UpdateUserPermissions(ctx context.Context, in *UpdateUserPermissionsRequest, opts ...grpc.CallOption) (*UpdateUserPermissionsResponse, error)
 	LogIn(ctx context.Context, in *LogInRequest, opts ...grpc.CallOption) (*LogInResponse, error)
 	Authenticate(ctx context.Context, in *AuthenticateRequest, opts ...grpc.CallOption) (*AuthenticateResponse, error)
+	GetUserListAutocomplete(ctx context.Context, in *GetUserListAutocompleteRequest, opts ...grpc.CallOption) (*GetUserListAutocompleteResponse, error)
 }
 
 type userServiceClient struct {
@@ -112,6 +113,15 @@ func (c *userServiceClient) Authenticate(ctx context.Context, in *AuthenticateRe
 	return out, nil
 }
 
+func (c *userServiceClient) GetUserListAutocomplete(ctx context.Context, in *GetUserListAutocompleteRequest, opts ...grpc.CallOption) (*GetUserListAutocompleteResponse, error) {
+	out := new(GetUserListAutocompleteResponse)
+	err := c.cc.Invoke(ctx, "/music_streaming.authentication.user.UserService/GetUserListAutocomplete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -124,6 +134,7 @@ type UserServiceServer interface {
 	UpdateUserPermissions(context.Context, *UpdateUserPermissionsRequest) (*UpdateUserPermissionsResponse, error)
 	LogIn(context.Context, *LogInRequest) (*LogInResponse, error)
 	Authenticate(context.Context, *AuthenticateRequest) (*AuthenticateResponse, error)
+	GetUserListAutocomplete(context.Context, *GetUserListAutocompleteRequest) (*GetUserListAutocompleteResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -154,6 +165,9 @@ func (UnimplementedUserServiceServer) LogIn(context.Context, *LogInRequest) (*Lo
 }
 func (UnimplementedUserServiceServer) Authenticate(context.Context, *AuthenticateRequest) (*AuthenticateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserListAutocomplete(context.Context, *GetUserListAutocompleteRequest) (*GetUserListAutocompleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserListAutocomplete not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -312,6 +326,24 @@ func _UserService_Authenticate_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetUserListAutocomplete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserListAutocompleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserListAutocomplete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/music_streaming.authentication.user.UserService/GetUserListAutocomplete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserListAutocomplete(ctx, req.(*GetUserListAutocompleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -350,6 +382,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Authenticate",
 			Handler:    _UserService_Authenticate_Handler,
+		},
+		{
+			MethodName: "GetUserListAutocomplete",
+			Handler:    _UserService_GetUserListAutocomplete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
