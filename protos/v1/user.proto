@@ -172,6 +172,11 @@ message AuthenticateResponse {
 }
 
 message GetUserListAutocompleteRequest {
+  music_streaming.common.PaginationInfo pagination_info = 1;
+  GetUserListAutocompleteRequestFilter filter = 2;
+}
+
+message GetUserListAutocompleteRequestFilter {
   string email = 1;
 }
 
