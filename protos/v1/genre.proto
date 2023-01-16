@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package music_streaming.music.genre;
+
+option go_package="./go/v1";
+
+import "protos/v1/common.proto";
+import "google/api/annotations.proto";
+
+message Genre {
+  uint32 genre_id = 1;
+  string name = 2;
+  uint64 created_at = 3;
+  uint64 updated_at = 4;
+}
+
+service GenreService {
+  rpc GetGenreOptionsList (GetGenreOptionsListRequest) returns (GetGenreOptionsListResponse) {
+    option (google.api.http) = {
+      post: "/api/gateway/v1/genre/get_options_list"
+      body: "*"
+    };
+  };
+}
+
+message GetGenreOptionsListRequest {
+  music_streaming.common.MetaRequest meta = 1;
+}
+
+message GetGenreOptionsListResponse {
+  GetGenreOptionsListResponseData data = 1;
+  optional uint32 error = 2;
+  optional string error_msg = 3;
+}
+
+message GetGenreOptionsListResponseData {
+  repeated music_streaming.common.NameValueInt32 genres = 1;
+}
+
